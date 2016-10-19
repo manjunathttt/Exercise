@@ -1,0 +1,264 @@
+<!DOCTYPE html>  
+  
+<html xmlns="http://www.w3.org/1999/xhtml">  
+<head runat="server">  
+    <title>TestExample</title>  
+   
+   
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+ 
+    <!-- css ref  -->
+    
+    
+      <style>
+      
+h1 {
+	color: yellow;
+
+    background-color: green;
+	
+	text-shadow:  2px 2px red, 0 0 25px #7FFF00, 0 0 10px #7FFF00;
+}
+
+body {
+    background-color: lightyellow;
+}
+
+p {
+    background-color: yellow;
+}
+
+
+
+</style>
+     
+
+    
+    <script type="text/javascript">  
+        var isHtml5Compatible = document.createElement('canvas').getContext != undefined;  
+  
+        if (isHtml5Compatible) {  
+            initiateLocalStorage();  
+  
+        }  
+  
+        
+        
+        function initiateLocalStorage() {  
+            // Create the AngularJS app   
+            var app = angular.module('Employees', ['storageService']);  
+  
+            // Create the Controller  
+            app.controller('EmployeesController', ['$scope', 'getLocalStorage', function ($scope, getLocalStorage) {  
+                $scope.appTitle = "LocalStorage";  
+                $scope.appHeadline = "AngularJS and HTML5";  
+  
+                //Read the Employee List from LocalStorage  
+                $scope.employees = getLocalStorage.getEmployees();  
+  
+                //Count the Employee List  
+                $scope.count = $scope.employees.length;  
+  
+               
+				 
+                
+  
+                //Add Employee - using AngularJS push to add Employee in the Employee Object  
+                //Call Update Employee to update the locally stored Employee List  
+                //Reset the AngularJS Employee scope  
+                //Update the Count  
+                $scope.addEmployee = function () {  
+                    $scope.employees.push({ 'firstname': $scope.firstname, 'lastname': $scope.lastname, 'number': $scope.number, 'address': $scope.address });  
+                    getLocalStorage.updateEmployees($scope.employees);  
+                    $scope.firstname = '';  
+                    $scope.lastname = '';  
+                    $scope.number = '';
+                    $scope.address = '';
+                    $scope.count = $scope.employees.length;  
+                };  
+  
+                //Delete Employee - Using AngularJS splice to remove the emp row from the Employee list  
+                //All the Update Employee to update the locally stored Employee List  
+                //Update the Count  
+                $scope.deleteEmployee = function (emp) {  
+                    $scope.employees.splice($scope.employees.indexOf(emp), 1);  
+                    getLocalStorage.updateEmployees($scope.employees);  
+                    $scope.count = $scope.employees.length;  
+                };  
+            }]);  
+  
+            //Create the Storage Service Module  
+            //Create getLocalStorage service to access UpdateEmployees and getEmployees method  
+            var storageService = angular.module('storageService', []);  
+            storageService.factory('getLocalStorage', function () {  
+                var employeeList = {};  
+                return {  
+                    list: employeeList,  
+                    updateEmployees: function (EmployeesArr) {  
+                        if (window.localStorage && EmployeesArr) {  
+                            //Local Storage to add Data  
+                            localStorage.setItem("employees", angular.toJson(EmployeesArr));  
+                        }  
+                        employeeList = EmployeesArr;  
+  
+                    },  
+                    getEmployees: function () {  
+                        //Get data from Local Storage  
+                        employeeList = angular.fromJson(localStorage.getItem("employees"));  
+                        return employeeList ? employeeList : [];  
+                    }  
+                };  
+  
+            });  
+        }  
+    </script>  
+  
+</head>  
+<body ng-app="Employees">  
+  
+    <div ng-controller="EmployeesController">  
+  
+    <center>    <h1 class="app-title">{{ appTitle }}</h1>  
+        <h2 class="app-headline">{{ appHeadline }}</h2>  
+  	
+  	
+  	</center>
+        <form name="frm"   class="container">
+        
+        
+        
+      <div class="form-group">
+        <fieldset>
+          <input type="search" name="search" name="search" placeholder="Search..." data-ng-click="search" class="form-control" /> 
+          <br>
+          <button data-ng-click="searchEmployee()" type="button" class="btn btn-search">Search</button>
+        </fieldset>
+      </div>
+    <br>
+    <br>
+       
+            <table>  
+                <tr>  
+                    <td>First Name  :  
+  
+                    </td>  
+                    <td>  
+                         <div >
+                               <input type="text" ng-model="firstname" name="firstname"  placeholder="Enter your first name" required ng-minlength="1"/>
+                          </div>
+                            
+                    </td>  
+                </tr>  
+
+                
+                <tr>  
+                    <td>Last Name  :  
+  
+                    </td>  
+                    <td>  
+
+                       		 <div >
+                               <input type="text" ng-model="lastname" name="lastname"  placeholder="Enter your last name" required ng-minlength="1"/>
+
+                              </div>
+                    </td>  
+                </tr> 
+                
+                 
+                <tr>  
+                    <td>Mob No  : 
+                    
+                    </td>  
+                    <td>                          
+                        	<div>
+                                  <input type="number" ng-model="number" name="number"  placeholder="Enter your contact number" required ng-minlength="10"/>
+                                  
+                              </div>
+                      
+                    </td>  
+                </tr>  
+                
+                 <tr>  
+                    <td>Address  :  
+  
+                    </td>  
+                    <td>  
+ 							<div >
+                               <input type="text" ng-model="address" name="address"  placeholder="Enter your Address" required ng-minlength="5"/>
+
+                              </div>
+                    </td>  
+                </tr>
+                
+                
+                <tr>  
+                    <td colspan="2" align="right">  
+  
+							<button ng-click="addEmployee()" ng-disabled="frm.$invalid" type="button" class="btn btn-success">Add</button>
+
+
+                    </td>  
+  
+                </tr>  
+            </table>  
+        </form> 
+ <br>
+ <br>
+ <br>       
+        <div class="container">
+
+			<table class=" table table-bordered table-hover table-condensed ">
+            <tr>  
+                <td><b>Emp No</b></td>  
+                <td><b>Emp Name</b></td>  
+                <td><b>Emp Salary</b></td>
+                <td><b>Address</b></td>  
+                <td><b>Action</b></td>  
+            </tr> 
+            <tr ng-repeat="employee in employees">  
+                <td>{{ employee.firstname }}  
+                </td>  
+                <td>{{ employee.lastname }}  
+                </td>  
+                <td>{{ employee.number }}  
+                </td> 
+                <td>{{ employee.address }}  
+                </td>  
+                <td>  
+                    
+                    
+                    <button ng-click="deleteEmployee(employee)" type="button" class="btn btn-danger">Delete</button> 
+  
+                </td>  
+            </tr>  
+  
+        </table>
+        </div>
+    <center>     
+        
+        <div>Total Employees : {{count}}</div>  
+         </div>  
+ 
+<br>
+<br>
+<br>
+
+    <footer>
+        <div class="container">
+            <div>   
+                    <p class="copyright text-muted small" style="color:red ">Copyright &copy; Coding and designed by Prashant Gaurav</p>
+                   
+                </div>
+            </div>
+    </footer>
+    
+    </center>
+   
+  
+  
+</body>  
+</html>  
